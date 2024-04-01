@@ -15,8 +15,8 @@
     let map;
 
 	onMount(async () => {
-    const Canister = await import('/frontend/src/components/utils/canisterFactory.js');
-  	const IcHttp = await import('/frontend/src/components/utils/ichttp.js');
+    const Canister = await import('/src/frontend/src/components/utils/canisterFactory.js');
+  	const IcHttp = await import('/src/frontend/src/components/utils/ichttp.js');
 
     const bounds = [ [50.333888, 19.490000], [50.348309, 19.541373] ];
 
@@ -64,7 +64,7 @@
   </div>
 </main>
 
-<style>
+<style lang="de">
     @import 'leaflet/dist/leaflet.css';
     main div {
         height: 800px;

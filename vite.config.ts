@@ -65,8 +65,9 @@ const config: UserConfig = {
 	},
 	resolve: {
     alias: {
-			$utils: resolve('./frontend/src/components/utils'),
-			$declarations: resolve('./frontend/src/declarations')
+			$utils: resolve('./src/frontend/src/components/utils'),
+			$declarations: resolve('/src/declarations'),
+			$frontend: resolve('./src/frontend/src/')
     },
   },
   server: {

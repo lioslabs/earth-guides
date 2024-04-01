@@ -23,21 +23,24 @@
     },
     "backend": {
       "type": "custom",
-      "main": "backend/src/index.ts",
-      "candid": "backend/src/index.did",
+      "candid_gen": "http",
+      "main": "src/backend/src/index.ts",
+      "candid": "src/backend/src/index.did",
       "build": "npx azle backend",
       "wasm": ".azle/backend/backend.wasm",
+      "root": "src/backend/src",
+      "ts": "src/backend/src/index.ts",
       "gzip": true
     },
-    "dfinity_js_frontend": {
+    "frontend": {
       "dependencies": [
         "backend"
       ],
       "frontend": {
-        "entrypoint": "frontend/src/App.html"
+        "entrypoint": "src/frontend/src/App.html"
       },
       "source": [
-        "frontend/src/assets",
+        "src/frontend/src/assets",
         "dist/frontend/"
       ],
       "type": "assets",

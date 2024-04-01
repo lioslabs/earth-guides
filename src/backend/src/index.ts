@@ -1,14 +1,18 @@
-
 import { v4 as uuidv4 } from 'uuid';
 import { Server, StableBTreeMap, ic, Principal, serialize, Result } from 'azle';
 import express from 'express';
 import cors from 'cors';
 import { hexAddressFromPrincipal } from "azle/canisters/ledger";
 
-type pos = {
+class pos {
   long: number;
   lat: number;
-};
+}
+
+class Group {
+    id: string;
+    name: string;
+}
 
 class Marker {
   id: string;
@@ -19,7 +23,7 @@ class Marker {
 class Polyline {
   id: string;
   edges: pos[];
-  owner Group;
+  owner: Group;
 }
 
 class Polygon {
@@ -33,10 +37,10 @@ class Popup {
 }
 
 //const userStorage = StableBTreeMap<string, User>(0);
-const groupStorage = StableBTreeMap<string, Group>(0);
-const markerStorage = StableBTreeMap<string, Markers>(1);
-const polygonStorage = StableBTreeMap<string, Polygon>(2);
-const popupStorage = StableBTreeMap<string, Popup>(3);
+const groupStorage = StableBTreeMap<string, Group>(1);
+const markerStorage = StableBTreeMap<string, Markers>(2);
+const polygonStorage = StableBTreeMap<string, Polygon>(3);
+const popupStorage = StableBTreeMap<string, Popup>(4);
 
 
 export default Server(() => {
