@@ -33,10 +33,10 @@ class Popup {
 }
 
 //const userStorage = StableBTreeMap<string, User>(0);
-const groupStorage = StableBTreeMap<string, Group>(1);
-const markerStorage = StableBTreeMap<string, Markers>(2);
-const polygonStorage = StableBTreeMap<string, Polygon>(3);
-const popupStorage = StableBTreeMap<string, Popup>(4);
+const groupStorage = StableBTreeMap<string, Group>(0);
+const markerStorage = StableBTreeMap<string, Markers>(1);
+const polygonStorage = StableBTreeMap<string, Polygon>(2);
+const popupStorage = StableBTreeMap<string, Popup>(3);
 
 
 export default Server(() => {

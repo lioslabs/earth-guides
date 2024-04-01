@@ -1,6 +1,6 @@
-import { approve } from "./icrc2_ledger";
+//import { approve } from "./icrc2_ledger";
 import { createCanisterActor } from "./canisterFactory";
-import { idlFactory as marketPlaceIDL } from "../../../declarations/dfinity_js_backend/dfinity_js_backend.did.js";
+import { idlFactory as marketPlaceIDL } from "$declarations/backend/backend.did.js";
 import IcHttp from "./ichttp";
 
 const marketplaceAgentCanister = await createCanisterActor(process.env.BACKEND_CANISTER_ID, marketPlaceIDL);
