@@ -32,13 +32,17 @@
             ).addTo(map);
 
             map.on('click', (e) => {addMarker(e, L)})
-            await update_markers();
+            await update_map();
     });
-
-    async function update_markers(){
-      markers = getMarkers();
+   
+    async function update_map(){
+      markers = await getMarkers();
+      markers.forEach((marker) => {
+        if (marker.pos) {
+            L.marker(marker.pos).addTo(map);
+          }
+      })
     }
-    
     function fitMap(map){
         map.fitBounds([ [50.328313, 19.476013], [50.357153, 19.558067] ]);
     }
@@ -47,21 +51,18 @@
         markerMode = !markerMode
         if (markerMode == true) {
               const res = createMarker({"pos": event.latlng}).then((newMarker) => {
-              console.log("newmarker", newMarker);
-              L.marker(event.latlng).addTo(map)
+              if (res != undefined){
+              console.log(newMarker['pos'], newMarker);
+                L.marker(newMarker.pos).addTo(map)
+              }
           });
       }
     }
 
-    $: console.log(markers)
 </script>
 
 <main>
     <div bind:this={mapElement}  on:doubleclick|stopPropagation={() => console.log('doubleclick')}></div>
-  <div class="toolbar">
-    <button id="center" on:click={ () => fitMap(map) }/>
-    <button id="marker" on:click={ (event) => addMarker(event) } />
-  </div>
 </main>
 
 <style lang="de">
