@@ -5,9 +5,10 @@ import IcHttp from "./ichttp";
 
 const marketplaceAgentCanister = await createCanisterActor(process.env.BACKEND_CANISTER_ID, marketPlaceIDL);
 const httpClient = new IcHttp(marketplaceAgentCanister);
-
+console.log(marketplaceAgentCanister);
+console.log(process.env.BACKEND_CANISTER_ID);
 export async function createMarker(data) {
-    return httpClient.POST({path: "/marker", data});
+    return httpClient.POST({path: "/marker", data: data});
 }
 
 export async function getAddressFromPrincipal(principalHex) {

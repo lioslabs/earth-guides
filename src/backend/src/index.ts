@@ -75,7 +75,7 @@ export default Server(() => {
     app.get("/popups", (req, res) => {
         res.json(popupStorage.values());
     });
-
+/*
     app.get("/user/:id", (req, res) => {
         const userId = req.params.id;
         const UserOpt = userStorage.get(UserId);
@@ -85,14 +85,14 @@ export default Server(() => {
             res.json(userOpt.Some);
         }
     });
-
+*/
     app.post("/marker", (req, res) => {
         const payload = req.body as Marker;
-        const marker = { id: uuidv4(), owner: ic.caller().toText(), ...payload };
+        const marker = { id: uuidv4(), owner: "dedede", ...payload };
         markerStorage.insert(marker.id, marker);
         return res.json(marker);
     });
-
+/*
     app.put("/marker/:id", (req, res) => {
         const markerId = req.params.id;
         const payload = req.body as MarkerPayload;

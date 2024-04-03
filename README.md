@@ -44,3 +44,7 @@ Stage 4. Technological development: AR app and game design and ICP optimisation;
 
 Stage 5.  Launching of the Earth Guides #beta (January 2025)
 Next stages: testing, data collection & analysis; upgrades; testing for new use within Nature preservation and ecological education #CitizenScience #CitizenArt;
+
+### The software
+
+the software can be launched with a npx deploy frontend.

@@ -46,12 +46,10 @@
     function addMarker(event){
         markerMode = !markerMode
         if (markerMode == true) {
-              console.log(event.latlng)
-              console.log(JSON.stringify({"pos": event.latlng}))
-              createMarker(JSON.stringify({"pos": event.latlng})).then((newMarker) => {
-              console.log(newMarker);
+              const res = createMarker({"pos": event.latlng}).then((newMarker) => {
+              console.log("newmarker", newMarker);
               L.marker(event.latlng).addTo(map)
-          })
+          });
       }
     }
 
