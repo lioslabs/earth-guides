@@ -20,8 +20,8 @@
     "start": "webpack serve --mode development --env development",
     "deploy:local": "dfx deploy --network=local",
     "deploy:ic": "dfx deploy --network=ic",
-    "generate": "dfx generate dfinity_js_backend",
-    "gen-deploy:local": "dfx generate dfinity_js_backend && dfx deploy --network=local"
+    "generate": "dfx generate backend",
+    "gen-deploy:local": "dfx generate backend && dfx deploy --network=local"
   },
   "devDependencies": {
     "@rollup/plugin-inject": "^5.0.5",

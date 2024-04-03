@@ -5,7 +5,7 @@ import cors from 'cors';
 import { hexAddressFromPrincipal } from "azle/canisters/ledger";
 
 class pos {
-  long: number;
+  lng: number;
   lat: number;
 }
 
@@ -14,10 +14,17 @@ class Group {
     name: string;
 }
 
+class User {
+    id: string;
+    name: string;
+    groups: Groups[];
+}
+
 class Marker {
   id: string;
   position: pos;
   owner: Group;
+  creator: string;
 }
 
 class Polyline {
@@ -36,7 +43,7 @@ class Popup {
   id: string;
 }
 
-//const userStorage = StableBTreeMap<string, User>(0);
+const userStorage = StableBTreeMap<string, User>(0);
 const groupStorage = StableBTreeMap<string, Group>(1);
 const markerStorage = StableBTreeMap<string, Markers>(2);
 const polygonStorage = StableBTreeMap<string, Polygon>(3);
@@ -81,7 +88,7 @@ export default Server(() => {
 
     app.post("/marker", (req, res) => {
         const payload = req.body as Marker;
-        const marker = { user: ic.caller().toText(), ...payload };
+        const marker = { id: uuidv4(), owner: ic.caller().toText(), ...payload };
         markerStorage.insert(marker.id, marker);
         return res.json(marker);
     });
@@ -100,7 +107,7 @@ export default Server(() => {
         }
     });
 
-    app.delete("/markers/:id", (req, res) => {
+    app.delete("/marker/:id", (req, res) => {
         const markerId = req.params.id;
         const deletedMarkerOpt = markersStorage.remove(markerId);
         if ("None" in deletedMarkerOpt) {

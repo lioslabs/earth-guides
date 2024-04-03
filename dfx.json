@@ -40,8 +40,7 @@
         "entrypoint": "src/frontend/src/App.html"
       },
       "source": [
-        "src/frontend/src/assets",
-        "dist/frontend/"
+        "build/"
       ],
       "type": "assets",
       "gzip": true

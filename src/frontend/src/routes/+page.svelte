@@ -2,7 +2,7 @@
 
   import { onMount } from 'svelte'
 	
-  import type {MapOptions} from 'leaflet';
+  import L from 'leaflet';
 
 
   import { createMarker, getMarkers } from '$utils/marketplace';
@@ -13,47 +13,47 @@
     
     let mapElement;
     let map;
+    let markers;
+    let markerMode = true;
 
 	onMount(async () => {
-    const Canister = await import('/src/frontend/src/components/utils/canisterFactory.js');
-  	const IcHttp = await import('/src/frontend/src/components/utils/ichttp.js');
 
     const bounds = [ [50.333888, 19.490000], [50.348309, 19.541373] ];
 
-            const leaflet = await import('leaflet');
 
-            map = leaflet.map(mapElement)
+            map = L.map(mapElement)
                 .fitBounds(bounds).setMinZoom(15);
 
             map.doubleClickZoom.disable();
             map.setMaxBounds(map.getBounds())
 
-            leaflet.tileLayer(
+            L.tileLayer(
               'https://b.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
             ).addTo(map);
 
-            leaflet.marker([51.5, -0.09]).addTo(map)
-                .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-            map.on('click', (e) => {
-              console.log(e);
-              leaflet.marker(e.latlng).addTo(map)
-            })
+            map.on('click', (e) => {addMarker(e, L)})
+            await update_markers();
     });
+
+    async function update_markers(){
+      markers = getMarkers();
+    }
     
     function fitMap(map){
-                map.fitBounds([
-                  [50.328313, 19.476013],
-                  [50.357153, 19.558067]
-                  ]);
+        map.fitBounds([ [50.328313, 19.476013], [50.357153, 19.558067] ]);
     }
 
-    let markerMode = true;
-    function addMarker(event){
-      markerMode = !markerMode
-      if (markerMode == true) {
-        
+    async function addMarker(event){
+        markerMode = !markerMode
+        if (markerMode == true) {
+              console.log(event.latlng)
+              let newMarker = await createMarker('{"pos": e.latlng}')
+              console.log(newMarker);
+              L.marker(event.latlng).addTo(map)
       }
     }
+
+    $: console.log(markers)
 </script>
 
 <main>
