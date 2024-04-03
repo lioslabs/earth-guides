@@ -1,18 +1,21 @@
+import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
 import inject from '@rollup/plugin-inject';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { readFileSync } from 'fs';
-import { join } from 'path';
+import { dirname, join, resolve } from 'path';
+import { fileURLToPath } from 'url';
 import type { UserConfig } from 'vite';
 import { defineConfig, loadEnv } from 'vite';
-import { resolve } from 'path'
 
+const file = fileURLToPath(new URL('package.json', import.meta.url));
+const json = readFileSync(file, 'utf8');
+const { version } = JSON.parse(json);
 
 // npm run dev = local
 // npm run build = local
 // dfx deploy = local
 // dfx deploy --network ic = ic
 const network = process.env.DFX_NETWORK ?? 'local';
-const host = network === 'local' ? 'http://localhost:8000' : 'https://ic0.app';
 
 const readCanisterIds = ({ prefix }: { prefix?: string }): Record<string, string> => {
 	const canisterIdsJsonFile =
@@ -44,9 +47,31 @@ const readCanisterIds = ({ prefix }: { prefix?: string }): Record<string, string
 
 const config: UserConfig = {
 	plugins: [sveltekit()],
+	resolve: {
+    alias: {
+			$utils: resolve('./src/frontend/src/components/utils'),
+			$declarations: resolve('/src/declarations'),
+			$frontend: resolve('./src/frontend/src/')
+    }
+	},
 	build: {
-		target: 'es2022',
+		target: 'es2020',
 		rollupOptions: {
+			output: {
+				manualChunks: (id) => {
+					const folder = dirname(id);
+
+					if (
+						['@sveltejs', 'svelte', 'layercake'].find((lib) => folder.includes(lib)) ===
+							undefined &&
+						folder.includes('node_modules')
+					) {
+						return 'vendor';
+					}
+
+					return 'index';
+				}
+			},
 			// Polyfill Buffer for production build
 			plugins: [
 				inject({
@@ -55,27 +80,38 @@ const config: UserConfig = {
 			]
 		}
 	},
+	// proxy /api to port 8000 during development
+	server: {
+		proxy: {
+			'/api': 'http://localhost:4973'
+		},
+		watch: {
+			ignored: ['**/.dfx/**', '**/.github/**']
+		}
+	},
+	// Node polyfill agent-js. Thanks solution shared by chovyfu on the Discord channel.
+	// https://stackoverflow.com/questions/71744659/how-do-i-deploy-a-sveltekit-app-to-a-dfinity-container
 	optimizeDeps: {
 		esbuildOptions: {
 			// Node.js global to browser globalThis
 			define: {
 				global: 'globalThis'
-			}
+			},
+			// Enable esbuild polyfill plugins
+			plugins: [
+				NodeModulesPolyfillPlugin(),
+				{
+					name: 'fix-node-globals-polyfill',
+					setup(build) {
+						build.onResolve({ filter: /_virtual-process-polyfill_\.js/ }, ({ path }) => ({ path }));
+					}
+				}
+			]
 		}
 	},
-	resolve: {
-    alias: {
-			$utils: resolve('./src/frontend/src/components/utils'),
-			$declarations: resolve('/src/declarations'),
-			$frontend: resolve('./src/frontend/src/')
-    },
-  },
-  server: {
-    fs: {
-      allow: ["frontend"],
-    },
-		//port: 4943
-  },
+	worker: {
+		format: 'es'
+	}
 };
 
 export default defineConfig(({ mode }: UserConfig): UserConfig => {
@@ -83,9 +119,7 @@ export default defineConfig(({ mode }: UserConfig): UserConfig => {
 	process.env = {
 		...process.env,
 		...loadEnv(mode ?? 'development', process.cwd()),
-		...readCanisterIds({ prefix: 'VITE_' }),
-		VITE_DFX_NETWORK: network,
-		VITE_HOST: host
+		...readCanisterIds({ prefix: 'VITE_' })
 	};
 
 	return {
@@ -95,7 +129,8 @@ export default defineConfig(({ mode }: UserConfig): UserConfig => {
 			'process.env': {
 				...readCanisterIds({}),
 				DFX_NETWORK: network
-			}
+			},
+			VITE_APP_VERSION: JSON.stringify(version)
 		}
 	};
 });
