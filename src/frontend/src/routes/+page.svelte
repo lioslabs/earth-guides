@@ -43,13 +43,15 @@
         map.fitBounds([ [50.328313, 19.476013], [50.357153, 19.558067] ]);
     }
 
-    async function addMarker(event){
+    function addMarker(event){
         markerMode = !markerMode
         if (markerMode == true) {
               console.log(event.latlng)
-              let newMarker = await createMarker('{"pos": e.latlng}')
+              console.log(JSON.stringify({"pos": event.latlng}))
+              createMarker(JSON.stringify({"pos": event.latlng})).then((newMarker) => {
               console.log(newMarker);
               L.marker(event.latlng).addTo(map)
+          })
       }
     }
 
